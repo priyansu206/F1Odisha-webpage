@@ -4,7 +4,7 @@ import type { CommunityEvent } from "@/lib/types";
  * Community events — real content scraped from f1odisha.com (2026-09-03),
  * corrected by the site owner:
  *  - Monaco GP Watch Party was at SYMPHONY MALL (owner-confirmed).
- *  - Emirates Kitchen & Music hosted the official after-party (2 Sep 2026),
+ *  - Emirates Kitchen & Music hosted the official after-party (3 Sep 2026),
  *    added as a completed event per owner ("today's program").
  * All three are complete as of the session date; UI renders COMPLETED states.
  */
@@ -65,8 +65,8 @@ export const COMMUNITY_EVENTS: CommunityEvent[] = [
     status: "completed",
     emoji: "🎉",
     headline: "The official after party at Emirates Kitchen & Music",
-    dateLabel: "Wednesday 2 September 2026 · Completed ✓",
-    dateISO: "2026-09-02",
+    dateLabel: "Thursday 3 September 2026 · Completed ✓",
+    dateISO: "2026-09-03",
     venue: "Emirates Kitchen & Music, Bhubaneswar",
     access: "F1 Odisha Community",
     copy: [
