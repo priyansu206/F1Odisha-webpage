@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-f1-red: #E10600;
+  --color-f1-red-dark: #B00500;
+  --color-f1-red-bright: #E10600;
+  --color-carbon: #15151E;
+  --color-carbon-2: #1E1E2A;
+  --color-carbon-3: #26262F;
+  --color-off-white: #F5F5F5;
+  --color-grey-100: #E8E8E8;
+  --color-grey-300: #A9A9A9;
+  --color-grey-500: #767676;
+  --color-grey-700: #4C4C52;
+  --color-white: #FFFFFF;
+  --font-sans: var(--font-titillium), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-rajdhani), var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Global guard: zero curves by default */
+* { border-radius: 0; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-carbon);
+  color: var(--color-white);
+  font-family: var(--font-sans);
+}
+
+/* Ticker marquee loop */
+.ticker-track {
+  animation: ticker-scroll 30s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Live pulse dot */
+.animate-live-pulse {
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Skew accent utilities */
+.skew-accent {
+  display: inline-block;
+  transform: skewX(12deg);
+}
+.skew-accent-rev {
+  display: inline-block;
+  transform: skewX(-12deg);
+}
+
+/* Cut corner clip-path */
+.cut-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), 0 100%);
+}
+
+/* Checkered strip accent */
+.checker-strip {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-white) 0px,
+    var(--color-white) 4px,
+    var(--color-carbon) 4px,
+    var(--color-carbon) 8px
+  );
+}
+
+/* Tabular numerals for data */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
