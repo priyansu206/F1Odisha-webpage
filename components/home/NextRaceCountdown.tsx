@@ -9,6 +9,7 @@ import {
   getNextRaceWeekend,
   raceStartUTC,
 } from "@/lib/data/schedule";
+import type { RaceWeekend } from "@/lib/types";
 import { countdownParts } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -39,6 +40,20 @@ const CELLS = [
 export function NextRaceCountdown() {
   const now = useNow();
   const headerRef = useRef<HTMLDivElement>(null);
+  const [liveCalendar, setLiveCalendar] = useState<RaceWeekend[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/schedule/calendar", { next: { revalidate: 3600 } } as unknown as RequestInit)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data) && data.length) setLiveCalendar(data);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const el = headerRef.current;
@@ -63,7 +78,22 @@ export function NextRaceCountdown() {
     return () => ctx.revert();
   }, []);
 
-  const weekend = now !== null ? getNextRaceWeekend(new Date(now)) : null;
+  const weekend = (() => {
+    if (now === null) return null;
+    const d = new Date(now);
+    if (liveCalendar) {
+      // Use live calendar for precise sync
+      const t = d.getTime();
+      for (const w of liveCalendar) {
+        const raceStart = w.raceStartIST
+          ? new Date(`${w.endISO}T${w.raceStartIST}:00+05:30`).getTime()
+          : new Date(`${w.startISO}T00:00:00+05:30`).getTime();
+        if (t < raceStart) return w;
+      }
+      return null;
+    }
+    return getNextRaceWeekend(d);
+  })();
   const target = weekend ? raceStartUTC(weekend) : null;
   const left = target && now !== null ? countdownParts(target, now) : null;
   const seasonOver = now !== null && weekend === null;

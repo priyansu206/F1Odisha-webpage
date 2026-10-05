@@ -2,12 +2,14 @@
 
 import { motion } from "motion/react";
 import { RACE_CALENDAR } from "@/lib/data/schedule";
+import type { RaceWeekend } from "@/lib/types";
 import { formatISTDay } from "@/lib/utils";
 
-export function RaceMobileList() {
+export function RaceMobileList({ weekends }: { weekends?: RaceWeekend[] }) {
+  const calendar = weekends ?? RACE_CALENDAR;
   return (
     <div className="border-y border-white/10">
-      {RACE_CALENDAR.map((weekend, i) => (
+      {calendar.map((weekend, i) => (
         <motion.div
           key={`${weekend.round}-${weekend.country}`}
           initial={{ opacity: 0, y: 12 }}

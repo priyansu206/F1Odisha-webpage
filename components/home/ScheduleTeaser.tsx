@@ -1,15 +1,16 @@
 import { ModuleHeader } from "@/components/ui/ModuleHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { Tag } from "@/components/ui/Tag";
-import {
-  getUpcomingRaceWeekends,
-  statusOf,
-} from "@/lib/data/schedule";
+import { statusOf } from "@/lib/data/schedule";
+import { getLiveRaceCalendar } from "@/lib/data/schedule-sync";
 import { formatDateRange } from "@/lib/utils";
 
-export function ScheduleTeaser() {
-  const weekends = getUpcomingRaceWeekends(new Date(), 4);
+export async function ScheduleTeaser() {
+  const calendar = await getLiveRaceCalendar();
   const now = new Date();
+  const weekends = calendar
+    .filter((w) => new Date(`${w.endISO}T23:59:59+05:30`).getTime() > now.getTime())
+    .slice(0, 4);
 
   return (
     <section className="border-t border-white/10 bg-carbon-2/70 backdrop-blur-lg text-white">

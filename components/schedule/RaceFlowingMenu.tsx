@@ -2,6 +2,7 @@
 
 import FlowingMenu from "@/components/schedule/FlowingMenu";
 import { RACE_CALENDAR } from "@/lib/data/schedule";
+import type { RaceWeekend } from "@/lib/types";
 import { formatISTDay } from "@/lib/utils";
 
 /**
@@ -36,13 +37,24 @@ const TRACK_SLUGS: Record<string, string> = {
 const TRACK_IMAGE = (slug: string) =>
   `https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000001/common/f1/2026/track/2026track${slug}detailed.webp`;
 
-export function RaceFlowingMenu() {
-  const items = RACE_CALENDAR.map((weekend) => ({
+export function RaceFlowingMenu({ weekends }: { weekends?: RaceWeekend[] }) {
+  const calendar = weekends ?? RACE_CALENDAR;
+  // Handle duplicate Spain (Barcelona vs Madrid) by slug index, not country
+  const seenSpain = { count: 0 };
+  const slugFor = (w: RaceWeekend) => {
+    if (w.country === "Spain") {
+      seenSpain.count += 1;
+      return seenSpain.count === 1 ? "catalunya" : "madring";
+    }
+    if (w.country === "Bahrain") return "bahrain";
+    return TRACK_SLUGS[w.country] ?? "montecarlo";
+  };
+  const items = calendar.map((weekend) => ({
     link: "#race-weekends",
     text: `${weekend.country}`.toUpperCase(),
     meta: `R${String(weekend.round).padStart(2, "0")}`,
     sublabel: `${formatISTDay(weekend.startISO)}`,
-    image: TRACK_IMAGE(TRACK_SLUGS[weekend.country] ?? "montecarlo"),
+    image: TRACK_IMAGE(slugFor(weekend)),
   }));
 
   return (

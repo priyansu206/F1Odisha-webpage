@@ -93,6 +93,24 @@ export interface PodiumResult {
   time: string;
 }
 
+export interface SessionResult {
+  /** Session winner driver code, e.g. "VER" */
+  driver: string;
+  /** Best lap time, e.g. "1:15.243" */
+  time: string;
+  /** Optional team, e.g. "Red Bull" */
+  team?: string;
+}
+
+export interface RaceSessions {
+  practice1?: SessionResult;
+  practice2?: SessionResult;
+  practice3?: SessionResult;
+  qualifying?: SessionResult & { note?: string };
+  sprintQualifying?: SessionResult;
+  sprint?: SessionResult;
+}
+
 export interface RaceWeekend {
   round: number;
   country: string;
@@ -104,6 +122,14 @@ export interface RaceWeekend {
   /** Sunday race start, local India time as "HH:MM" (IST). The countdown
    *  and any race-start display target this instant. */
   raceStartIST?: string; // "18:30"
+  /** Circuit name, e.g. "Monza", "Yas Marina Circuit" */
+  circuit?: string;
+  /** Track length or laps info, e.g. "5.412 km" */
+  circuitLength?: string;
   /** Winner etc. present only for completed rounds (real scraped results). */
   podium?: PodiumResult[];
+  /** Session toppers — for completed/live weekends, who topped P1/P2/P3/Qualifying */
+  sessions?: RaceSessions;
+  /** Scheduled session times in IST, e.g. { practice1: "15:00", qualifying: "18:30" } */
+  sessionTimesIST?: Record<string, string>;
 }
